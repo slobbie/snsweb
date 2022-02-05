@@ -1,10 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import App from './components/App';
+import firebase from 'firebase/compat/app';
+import { BrowserRouter } from 'react-router-dom';
+
+console.log(firebase);
 
 ReactDOM.render(
-  <React.StrictMode>
+  <BrowserRouter>
     <App />
-  </React.StrictMode>,
+  </BrowserRouter>,
+
   document.getElementById('root')
 );
