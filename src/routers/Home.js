@@ -1,10 +1,16 @@
 import React from 'react';
 import { useState } from 'react/cjs/react.development';
+import { dbService } from '../fireinst';
 
 const Home = () => {
-  const [peed, setPeed] = useState('');
+  const [peed, setPeed] = async useState('');
   const onSubmit = (e) => {
     e.preventDefault();
+    await dbService.collection('peeds').add({
+      peed,
+      createdAt: Date.now(),
+    });
+    setPeed('');
   };
   const onChange = (e) => {
     setPeed(e.target.value);
