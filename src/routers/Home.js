@@ -2,29 +2,26 @@ import React, { useEffect } from 'react';
 import { useState } from 'react/cjs/react.development';
 import { dbService } from '../fireinst';
 
-const Home = () => {
+const Home = ({ userObj }) => {
   const [peed, setPeed] = useState('');
   const [peeds, setPeeds] = useState([]);
 
-  const getPeeds = async () => {
-    const dbPeeds = await dbService.collection('peeds').get();
-    dbPeeds.forEach((document) => {
-      const peedsObject = {
-        ...document.data(),
-        id: document.id,
-      };
-      setPeeds((prev) => [peedsObject, ...prev]);
-    });
-  };
-
   useEffect(() => {
-    getPeeds();
+    // getPeeds();
+    dbService.collection('peeds').onSnapshot((snapshot) => {
+      const peedArray = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setPeeds(peedArray);
+    });
   }, []);
   const onSubmit = async (e) => {
     e.preventDefault();
     await dbService.collection('peeds').add({
-      peed,
+      text: peed,
       createdAt: Date.now(),
+      createrId: userObj.uid,
     });
     setPeed('');
   };
@@ -32,7 +29,6 @@ const Home = () => {
     setPeed(e.target.value);
   };
 
-  console.log(peeds);
   return (
     <div>
       <form onSubmit={onSubmit}>
@@ -49,7 +45,7 @@ const Home = () => {
         {peeds.map((peed) => {
           return (
             <div key={peed.id}>
-              <h4>{peed.peed}</h4>
+              <h4>{peed.text}</h4>
             </div>
           );
         })}
