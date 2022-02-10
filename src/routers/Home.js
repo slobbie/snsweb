@@ -20,13 +20,12 @@ const Home = ({ userObj }) => {
   const onSubmit = async (e) => {
     e.preventDefault();
     let attachmentUrl = '';
-    if (attachment != '') {
-      // 사진이 있을경우에만 실행
+    if (attachment !== '') {
       const attachmentRef = storageService
         .ref()
         .child(`${userObj.uid}/${uuidv4()}`);
       const response = await attachmentRef.putString(attachment, 'data_url');
-      const attachmentUrl = await response.ref.getDownloadURL();
+      attachmentUrl = await response.ref.getDownloadURL();
     }
     const peedObj = {
       text: peed,

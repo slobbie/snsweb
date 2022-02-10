@@ -1,14 +1,17 @@
 import { useState } from 'react';
-import { dbService } from '../fireinst';
+import { dbService, storageService } from '../fireinst';
 
 const Peed = ({ peedObj, isOwner }) => {
   const [editing, setEditing] = useState(false);
   const [newPeed, setNewPeed] = useState(peedObj.text);
   const onDeleteClick = async () => {
     const ok = window.confirm('게시글을 지우겠습니까?');
-    console.log(ok);
+    // console.log(ok);
     if (ok) {
       await dbService.doc(`peeds/${peedObj.id}`).delete();
+      if (peedObj.attachmentUrl) {
+        await storageService.refFromURL(peedObj.attachmentUrl).delete();
+      }
     }
   };
   const toggleEditing = () => {
