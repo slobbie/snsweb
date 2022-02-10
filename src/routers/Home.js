@@ -6,6 +6,7 @@ import { dbService } from '../fireinst';
 const Home = ({ userObj }) => {
   const [peed, setPeed] = useState('');
   const [peeds, setPeeds] = useState([]);
+  const [attachment, setAttachment] = useState();
 
   useEffect(() => {
     // getPeeds();
@@ -29,7 +30,25 @@ const Home = ({ userObj }) => {
   const onChange = (e) => {
     setPeed(e.target.value);
   };
+  const onFileChange = (e) => {
+    const {
+      target: { files },
+    } = e;
+    const theFile = files[0];
+    const reader = new FileReader();
+    reader.onloadend = (finishedEvent) => {
+      console.log(finishedEvent);
+      const {
+        currentTarget: { result },
+      } = finishedEvent;
+      setAttachment(result);
+    };
+    reader.readAsDataURL(theFile);
+  };
 
+  const onClearPhot = () => {
+    setAttachment(null);
+  };
   return (
     <div>
       <form onSubmit={onSubmit}>
@@ -40,7 +59,14 @@ const Home = ({ userObj }) => {
           placeholder="what's on your mind"
           maxLength={120}
         />
+        <input type='file' accept='image/*' onChange={onFileChange} />
         <input type='submit' value='NewPeed' />
+        {attachment && (
+          <div>
+            <img src={attachment} width='50px' height='50px' />
+            <button onClick={onClearPhot}>x</button>
+          </div>
+        )}
       </form>
       <div>
         {peeds.map((peed) => {
