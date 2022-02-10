@@ -1,15 +1,14 @@
-import React, { useEffect } from 'react';
-import { useState } from 'react/cjs/react.development';
+import React, { useState, useEffect } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import Peed from '../components/peed';
-import { dbService } from '../fireinst';
+import { dbService, storageService } from '../fireinst';
 
 const Home = ({ userObj }) => {
   const [peed, setPeed] = useState('');
   const [peeds, setPeeds] = useState([]);
-  const [attachment, setAttachment] = useState();
+  const [attachment, setAttachment] = useState('');
 
   useEffect(() => {
-    // getPeeds();
     dbService.collection('peeds').onSnapshot((snapshot) => {
       const peedArray = snapshot.docs.map((doc) => ({
         id: doc.id,
@@ -20,13 +19,26 @@ const Home = ({ userObj }) => {
   }, []);
   const onSubmit = async (e) => {
     e.preventDefault();
-    await dbService.collection('peeds').add({
+    let attachmentUrl = '';
+    if (attachment != '') {
+      // 사진이 있을경우에만 실행
+      const attachmentRef = storageService
+        .ref()
+        .child(`${userObj.uid}/${uuidv4()}`);
+      const response = await attachmentRef.putString(attachment, 'data_url');
+      const attachmentUrl = await response.ref.getDownloadURL();
+    }
+    const peedObj = {
       text: peed,
       createdAt: Date.now(),
       createrId: userObj.uid,
-    });
+      attachmentUrl,
+    };
+    await dbService.collection('peeds').add(peedObj);
     setPeed('');
+    setAttachment('');
   };
+
   const onChange = (e) => {
     setPeed(e.target.value);
   };
@@ -37,7 +49,6 @@ const Home = ({ userObj }) => {
     const theFile = files[0];
     const reader = new FileReader();
     reader.onloadend = (finishedEvent) => {
-      console.log(finishedEvent);
       const {
         currentTarget: { result },
       } = finishedEvent;
@@ -47,8 +58,9 @@ const Home = ({ userObj }) => {
   };
 
   const onClearPhot = () => {
-    setAttachment(null);
+    setAttachment('');
   };
+
   return (
     <div>
       <form onSubmit={onSubmit}>

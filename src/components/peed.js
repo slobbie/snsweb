@@ -45,6 +45,9 @@ const Peed = ({ peedObj, isOwner }) => {
       ) : (
         <>
           <h4>{peedObj.text}</h4>
+          {peedObj.attachmentUrl && (
+            <img src={peedObj.attachmentUrl} width='50px' height='50px' />
+          )}
           {isOwner && (
             <>
               <button onClick={onDeleteClick}>Delete Peed</button>
