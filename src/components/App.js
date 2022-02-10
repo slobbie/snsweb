@@ -20,7 +20,7 @@ function App() {
     }); // firebase 로 user 정보가 들어오면 useEffect  를 이용하여 유저 정보를 붙잡아준다.
   }, []);
 
-  console.log(userObj);
+  // console.log(userObj);
   return (
     <>
       {init ? (

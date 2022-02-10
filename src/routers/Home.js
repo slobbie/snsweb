@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useState } from 'react/cjs/react.development';
+import Peed from '../components/peed';
 import { dbService } from '../fireinst';
 
 const Home = ({ userObj }) => {
@@ -44,9 +45,11 @@ const Home = ({ userObj }) => {
       <div>
         {peeds.map((peed) => {
           return (
-            <div key={peed.id}>
-              <h4>{peed.text}</h4>
-            </div>
+            <Peed
+              key={peed.id}
+              peedObj={peed}
+              isOwner={peed.createrId === userObj.uid}
+            />
           );
         })}
       </div>
