@@ -11,17 +11,37 @@ function App() {
   useEffect(() => {
     authService.onAuthStateChanged((user) => {
       if (user) {
-        setUserobj(user);
+        setUserobj({
+          displayName: authService.currentUser.displayName
+            ? authService.currentUser.displayName
+            : 'user',
+          uid: user.uid,
+          updateProfile: (args) => user.updateProfile(args),
+        });
       }
       setInit(true);
     }); // firebase 로 user 정보가 들어오면 useEffect  를 이용하여 유저 정보를 붙잡아준다.
   }, []);
 
-  // console.log(userObj);
+  const refreshUser = () => {
+    const user = authService.currentUser;
+    setUserobj({
+      displayName: authService.currentUser.displayName
+        ? authService.currentUser.displayName
+        : 'user',
+      uid: user.uid,
+      updateProfile: (args) => user.updateProfile(args),
+    });
+  };
+
   return (
     <>
       {init ? (
-        <AppRouter isLoggedIn={Boolean(userObj)} userObj={userObj} />
+        <AppRouter
+          refreshUser={refreshUser}
+          isLoggedIn={Boolean(userObj)}
+          userObj={userObj}
+        />
       ) : (
         'Initializing...'
       )}

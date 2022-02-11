@@ -6,14 +6,18 @@ import Profile from '../routers/Profile';
 
 import Nav from './Nav';
 
-const AppRouter = ({ isLoggedIn, userObj }) => {
+const AppRouter = ({ refreshUser, isLoggedIn, userObj }) => {
   return (
     <>
-      {isLoggedIn && <Nav />}
+      {isLoggedIn && <Nav userObj={userObj} />}
       {isLoggedIn ? (
         <Routes>
           <Route exact path='/' element={<Home userObj={userObj} />} />
-          <Route exact path='/profile' element={<Profile />} />
+          <Route
+            exact
+            path='/profile'
+            element={<Profile userObj={userObj} refreshUser={refreshUser} />}
+          />
         </Routes>
       ) : (
         <Routes>

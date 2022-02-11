@@ -30,7 +30,7 @@ const Home = ({ userObj }) => {
     const peedObj = {
       text: peed,
       createdAt: Date.now(),
-      createrId: userObj.uid,
+      creatorId: userObj.uid,
       attachmentUrl,
     };
     await dbService.collection('peeds').add(peedObj);

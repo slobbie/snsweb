@@ -1,18 +1,51 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../fireinst';
 
-const Profile = () => {
+const Profile = ({ refreshUser, userObj }) => {
+  const [newDisplayName, setNewDisplayName] = useState(userObj.displayName);
   const navigate = useNavigate();
   const onLogOutClick = () => {
     authService.signOut();
     navigate('/'); // logout 시에 메인으로 이동
   };
+  // const getMypeeds = async () => {
+  //   const peeds = await dbService
+  //     .collection('peeds')
+  //     .where('creatorId', '==', userObj.uid)
+  //     .orderBy('createdAt')
+  //     .get();
+  //   console.log(peeds.docs.map((doc) => doc.data()));
+  // };
+  // useEffect(() => {
+  //   getMypeeds();
+  // });
+
+  const onChange = (e) => {
+    setNewDisplayName(e.target.value);
+  };
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    if (userObj.displayName !== newDisplayName) {
+      await userObj.updateProfile({
+        displayName: newDisplayName,
+      });
+      refreshUser();
+    }
+  };
   return (
-    <div>
-      <span>Profile</span>
+    <>
+      <form onSubmit={onSubmit}>
+        <input
+          onChange={onChange}
+          type='text'
+          placeholder='Display name'
+          value={newDisplayName}
+        />
+        <input type='submit' value='Update Profile' />
+      </form>
       <button onClick={onLogOutClick}>Log out</button>
-    </div>
+    </>
   );
 };
 
