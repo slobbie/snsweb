@@ -18,6 +18,8 @@ function App() {
           uid: user.uid,
           updateProfile: (args) => user.updateProfile(args),
         });
+      } else {
+        setUserobj(null);
       }
       setInit(true);
     }); // firebase 로 user 정보가 들어오면 useEffect  를 이용하여 유저 정보를 붙잡아준다.

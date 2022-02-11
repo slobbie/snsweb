@@ -9,17 +9,6 @@ const Profile = ({ refreshUser, userObj }) => {
     authService.signOut();
     navigate('/'); // logout 시에 메인으로 이동
   };
-  // const getMypeeds = async () => {
-  //   const peeds = await dbService
-  //     .collection('peeds')
-  //     .where('creatorId', '==', userObj.uid)
-  //     .orderBy('createdAt')
-  //     .get();
-  //   console.log(peeds.docs.map((doc) => doc.data()));
-  // };
-  // useEffect(() => {
-  //   getMypeeds();
-  // });
 
   const onChange = (e) => {
     setNewDisplayName(e.target.value);
